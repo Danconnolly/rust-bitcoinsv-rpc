@@ -8,15 +8,15 @@
 #![crate_name = "bitcoinsv_rpc_json"]
 #![crate_type = "rlib"]
 
+extern crate alloc;
 extern crate serde;
 extern crate serde_json;
-extern crate alloc;
-use std::collections::HashMap;
-use serde::{Deserialize, Serialize};
-use std::fmt;
-use bitcoinsv::bitcoin::{BlockchainId, BlockHash, MerkleRoot, Tx, TxHash};
+use bitcoinsv::bitcoin::{BlockHash, BlockchainId, MerkleRoot, Tx, TxHash};
 use bitcoinsv::util::Amount;
 use hex::FromHex;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::fmt;
 
 /// A module used for serde serialization of bytes in hexadecimal format.
 ///
@@ -27,12 +27,12 @@ pub mod serde_hex {
     use serde::{Deserializer, Serializer};
 
     pub fn serialize<S: Serializer>(b: &Vec<u8>, s: S) -> Result<S::Ok, S::Error> {
-        s.serialize_str(&*hex::encode(b))
+        s.serialize_str(&hex::encode(b))
     }
 
     pub fn deserialize<'de, D: Deserializer<'de>>(d: D) -> Result<Vec<u8>, D::Error> {
         let hex_str: String = ::serde::Deserialize::deserialize(d)?;
-        Ok(FromHex::from_hex(&hex_str).map_err(D::Error::custom)?)
+        FromHex::from_hex(&hex_str).map_err(D::Error::custom)
     }
 
     pub mod opt {
@@ -43,7 +43,7 @@ pub mod serde_hex {
         pub fn serialize<S: Serializer>(b: &Option<Vec<u8>>, s: S) -> Result<S::Ok, S::Error> {
             match *b {
                 None => s.serialize_none(),
-                Some(ref b) => s.serialize_str(&*hex::encode(b)),
+                Some(ref b) => s.serialize_str(&hex::encode(b)),
             }
         }
 
@@ -66,7 +66,7 @@ pub struct GetNetworkInfoResultNetwork {
 #[cfg(test)]
 mod ninfo_network_tests {
     use super::*;
-    use serde_json;
+    
 
     #[test]
     fn test_deserialize_get_network_info_result_network() {
@@ -83,13 +83,12 @@ mod ninfo_network_tests {
         let result: GetNetworkInfoResultNetwork = serde_json::from_str(json_data).unwrap();
 
         assert_eq!(result.name, "ipv4");
-        assert_eq!(result.limited, false);
-        assert_eq!(result.reachable, true);
+        assert!(!result.limited);
+        assert!(result.reachable);
         assert_eq!(result.proxy, "");
-        assert_eq!(result.proxy_randomize_credentials, false);
+        assert!(!result.proxy_randomize_credentials);
     }
 }
-
 
 #[derive(Clone, PartialEq, Eq, Debug, Deserialize, Serialize)]
 pub struct GetNetworkInfoResultAddress {
@@ -101,7 +100,7 @@ pub struct GetNetworkInfoResultAddress {
 #[cfg(test)]
 mod ninfo_address_tests {
     use super::*;
-    use serde_json;
+    
 
     #[test]
     fn test_deserialize_get_network_info_result_address() {
@@ -120,7 +119,6 @@ mod ninfo_address_tests {
         assert_eq!(result.score, 13436);
     }
 }
-
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct GetNetworkInfoResult {
@@ -166,7 +164,7 @@ pub struct GetNetworkInfoResult {
 #[cfg(test)]
 mod ninfo_tests {
     use super::*;
-    use serde_json;
+    
 
     #[test]
     fn test_deserialize_get_network_info_result() {
@@ -315,7 +313,6 @@ mod getblock_tests {
     }
 }
 
-
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct GetBlockHeaderResult {
     pub hash: BlockHash,
@@ -343,7 +340,7 @@ pub struct GetBlockHeaderResult {
     pub next_block_hash: Option<BlockHash>,
     pub status: GetBlockResultStatus,
     #[serde(rename = "tx")]
-    pub coinbase_tx: Option<Vec<GetRawTransactionResult>>,  // its a vector but it only has one value
+    pub coinbase_tx: Option<Vec<GetRawTransactionResult>>, // its a vector but it only has one value
     #[serde(rename = "merkleproof")]
     pub coinbase_merkle_proof: Option<Vec<MerkleRoot>>,
 }
@@ -392,17 +389,9 @@ pub struct GetBlockStatsResult {
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct GetBlockStatsResultPartial {
-    #[serde(
-        default,
-        rename = "avgfee",
-        skip_serializing_if = "Option::is_none"
-    )]
+    #[serde(default, rename = "avgfee", skip_serializing_if = "Option::is_none")]
     pub avg_fee: Option<Amount>,
-    #[serde(
-        default,
-        rename = "avgfeerate",
-        skip_serializing_if = "Option::is_none"
-    )]
+    #[serde(default, rename = "avgfeerate", skip_serializing_if = "Option::is_none")]
     pub avg_fee_rate: Option<Amount>,
     #[serde(default, rename = "avgtxsize", skip_serializing_if = "Option::is_none")]
     pub avg_tx_size: Option<u32>,
@@ -412,65 +401,35 @@ pub struct GetBlockStatsResultPartial {
     pub height: Option<u64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ins: Option<usize>,
-    #[serde(
-        default,
-        rename = "maxfee",
-        skip_serializing_if = "Option::is_none"
-    )]
+    #[serde(default, rename = "maxfee", skip_serializing_if = "Option::is_none")]
     pub max_fee: Option<Amount>,
-    #[serde(
-        default,
-        rename = "maxfeerate",
-        skip_serializing_if = "Option::is_none"
-    )]
+    #[serde(default, rename = "maxfeerate", skip_serializing_if = "Option::is_none")]
     pub max_fee_rate: Option<Amount>,
     #[serde(default, rename = "maxtxsize", skip_serializing_if = "Option::is_none")]
     pub max_tx_size: Option<u32>,
-    #[serde(
-        default,
-        rename = "medianfee",
-        skip_serializing_if = "Option::is_none"
-    )]
+    #[serde(default, rename = "medianfee", skip_serializing_if = "Option::is_none")]
     pub median_fee: Option<Amount>,
     #[serde(default, rename = "mediantime", skip_serializing_if = "Option::is_none")]
     pub median_time: Option<u64>,
     #[serde(default, rename = "mediantxsize", skip_serializing_if = "Option::is_none")]
     pub median_tx_size: Option<u32>,
-    #[serde(
-        default,
-        rename = "minfee",
-        skip_serializing_if = "Option::is_none"
-    )]
+    #[serde(default, rename = "minfee", skip_serializing_if = "Option::is_none")]
     pub min_fee: Option<Amount>,
-    #[serde(
-        default,
-        rename = "minfeerate",
-        skip_serializing_if = "Option::is_none"
-    )]
+    #[serde(default, rename = "minfeerate", skip_serializing_if = "Option::is_none")]
     pub min_fee_rate: Option<Amount>,
     #[serde(default, rename = "mintxsize", skip_serializing_if = "Option::is_none")]
     pub min_tx_size: Option<u32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outs: Option<usize>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subsidy: Option<Amount>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub time: Option<u64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub total_out: Option<Amount>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub total_size: Option<usize>,
-    #[serde(
-        default,
-        rename = "totalfee",
-        skip_serializing_if = "Option::is_none"
-    )]
+    #[serde(default, rename = "totalfee", skip_serializing_if = "Option::is_none")]
     pub total_fee: Option<Amount>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub txs: Option<usize>,
@@ -646,7 +605,7 @@ impl GetRawTransactionResult {
         self.vin.len() == 1 && self.vin[0].is_coinbase()
     }
 
-    pub fn transaction(&self) -> Result<Tx, bitcoinsv::BsvError> {
+    pub fn transaction(&self) -> Result<Tx, bitcoinsv::Error> {
         let tx = Tx::from_hex(&self.hex)?;
         Ok(tx)
     }
@@ -661,7 +620,6 @@ pub struct GetTxOutResult {
     pub script_pub_key: GetRawTransactionResultVoutScriptPubKey,
     pub coinbase: bool,
 }
-
 
 #[allow(non_camel_case_types)]
 #[derive(Copy, Clone, PartialEq, Eq, Debug, Deserialize, Serialize)]

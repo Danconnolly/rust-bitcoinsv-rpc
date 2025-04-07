@@ -10,12 +10,9 @@
 
 #![deny(unused)]
 
-
-use tokio_stream::StreamExt;
+use bitcoinsv::bitcoin::BlockchainId;
 use bitcoinsv_rpc::jsonrpc::error::Error as JsonRpcError;
 use bitcoinsv_rpc::{Auth, Client, Error, RpcApi};
-use bitcoinsv::bitcoin::BlockchainId;
-
 
 /// Assert that the call returns the specified error message.
 macro_rules! assert_error_message {
@@ -29,17 +26,17 @@ macro_rules! assert_error_message {
 }
 
 fn get_rpc_url() -> String {
-    return std::env::var("RPC_URL").expect("RPC_URL must be set");
+    std::env::var("RPC_URL").expect("RPC_URL must be set")
 }
 
 fn get_auth() -> bitcoinsv_rpc::Auth {
     if let Ok(cookie) = std::env::var("RPC_COOKIE") {
-        return Auth::CookieFile(cookie.into());
+        Auth::CookieFile(cookie.into())
     } else if let Ok(user) = std::env::var("RPC_USER") {
         return Auth::UserPass(user, std::env::var("RPC_PASS").unwrap_or_default());
     } else {
         panic!("Either RPC_COOKIE or RPC_USER + RPC_PASS must be set.");
-    };
+    }
 }
 
 fn new_client() -> Client {
@@ -64,7 +61,7 @@ async fn main() {
     test_get_block_stats(&cl);
     test_get_difficulty(&cl);
     test_get_connection_count(&cl);
-    test_get_raw_mempool(&cl);    
+    test_get_raw_mempool(&cl);
     test_invalidate_block_reconsider_block(&cl);
     test_ping(&cl);
     test_get_peer_info(&cl);
@@ -111,15 +108,17 @@ fn test_get_block_hash(cl: &Client) {
 
 async fn test_get_block(cl: &Client) {
     let tip = cl.get_best_block_hash().unwrap();
-    let mut block = cl.get_block(&tip).await.unwrap();
-    while let Some(tx) = block.next().await {
-        let _ = tx.unwrap();
+    let block = cl.get_block(&tip).await.unwrap();
+    let it = block.tx_iter();
+    for tx in it {
+        let _ = tx;
     }
     let info = cl.get_block_info(&tip).unwrap();
     assert_eq!(info.hash, tip);
     assert_eq!(info.confirmations, 1);
     assert_eq!(info.num_tx, block.num_tx);
-    assert_eq!(info.hash, block.block_header.hash());
+    let hdr = block.header().unwrap();
+    assert_eq!(info.hash, hdr.hash());
 }
 
 fn test_get_block_header_get_block_header_info(cl: &Client) {
@@ -127,8 +126,8 @@ fn test_get_block_header_get_block_header_info(cl: &Client) {
     let header = cl.get_block_header(&tip).unwrap();
     let info = cl.get_block_header_info(&tip).unwrap();
     assert_eq!(header.hash(), tip);
-    assert_eq!(header.version, info.version);
-    assert_eq!(header.merkle_root, info.merkle_root);
+    assert_eq!(header.version(), info.version);
+    assert_eq!(header.merkle_root(), info.merkle_root);
     assert_eq!(info.confirmations, 1);
     assert_eq!(info.next_block_hash, None);
 }
@@ -139,7 +138,7 @@ fn test_get_block_stats(cl: &Client) {
     let header = cl.get_block_header(&tip_hash).unwrap();
     let stats = cl.get_block_stats(&tip_hash).unwrap();
     assert_eq!(header.hash(), stats.block_hash);
-    assert_eq!(header.timestamp, stats.time as u32);
+    assert_eq!(header.timestamp(), stats.time as u32);
     assert_eq!(tip, stats.height);
 }
 
@@ -162,7 +161,7 @@ fn test_invalidate_block_reconsider_block(cl: &Client) {
 }
 
 fn test_ping(cl: &Client) {
-    let _ = cl.ping().unwrap();
+    cl.ping().unwrap();
 }
 
 fn test_get_peer_info(cl: &Client) {

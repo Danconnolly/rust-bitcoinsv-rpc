@@ -1,3 +1,6 @@
+#![crate_name = "bitcoinsv_rpc"]
+#![crate_type = "rlib"]
+
 //! # Rust Client for Bitcoin SV API
 //!
 //! This is a client library for the Bitcoin SV JSON-RPC API.
@@ -10,9 +13,6 @@
 //! ```
 //!
 //! For documentation on which methods are available, see the [RpcApi] trait.
-
-#![crate_name = "bitcoinsv_rpc"]
-#![crate_type = "rlib"]
 
 #[macro_use]
 extern crate log;
@@ -30,4 +30,3 @@ mod error;
 
 pub use crate::client::{Auth, Client, RpcApi};
 pub use crate::error::Error;
-
