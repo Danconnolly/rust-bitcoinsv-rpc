@@ -128,7 +128,7 @@ version = "1.0.4"
 dependencies = [
  "async-trait",
  "bitcoinsv",
- "bitcoinsv-rpc-json",
+ "bitcoinsv-rpc-json 1.0.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "bytes",
  "hex",
  "jsonrpc",
@@ -145,6 +145,18 @@ name = "bitcoinsv-rpc-json"
 version = "1.0.4"
 dependencies = [
  "approx",
+ "bitcoinsv",
+ "hex",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "bitcoinsv-rpc-json"
+version = "1.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4edd2139e742fd96664bda5c7a60b73735ce0fc3d81a5855cc808b6eb96f2f7a"
+dependencies = [
  "bitcoinsv",
  "hex",
  "serde",
