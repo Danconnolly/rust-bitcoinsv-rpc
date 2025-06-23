@@ -15,6 +15,7 @@ bitcoind -regtest \
     -datadir=${TESTDIR}/1 \
     -port=12348 \
     -server=0 \
+    -rest=1 \
     -printtoconsole=0 &
 PID1=$!
 
@@ -29,6 +30,7 @@ bitcoind -regtest  \
     -connect=127.0.0.1:12348 \
     -rpcport=12349 \
     -server=1 \
+    -rest=1 \
     -txindex=1 \
     -printtoconsole=0 &
 PID2=$!
