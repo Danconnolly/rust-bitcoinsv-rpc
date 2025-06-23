@@ -15,6 +15,7 @@ pub enum Error {
     ReturnedError(String),
     /// The URI could not be parsed.
     InvalidUri,
+    RestError(String),
     MinReqError(jsonrpc::minreq_http::Error),
     SVJsonError(bitcoinsv::Error),
 }
@@ -66,6 +67,7 @@ impl fmt::Display for Error {
             Error::UnexpectedStructure => write!(f, "the JSON result had an unexpected structure"),
             Error::ReturnedError(ref s) => write!(f, "the daemon returned an error string: {}", s),
             Error::InvalidUri => write!(f, "the URI could not be parsed"),
+            Error::RestError(ref s) => write!(f, "REST error: {}", s),
             Error::MinReqError(ref e) => write!(f, "HTTPMinReq: {}", e),
             Error::SVJsonError(ref e) => write!(f, "SVJson: {}", e),
         }

@@ -225,15 +225,7 @@ pub trait RpcApi: Sized {
     }
 
     /// Fetch a complete block from the node.
-    ///
-    /// todo: This method of using getblock over the RPC interface is a terrible way to get blocks.
-    /// It will use at least three times the size of the block in RAM on the client machine.
-    /// Twice to retrieve the hex representation of the block and once to deserialize that to binary.
-    async fn get_block(&self, hash: &BlockHash) -> Result<Block> {
-        let hex: String = self.call("getblock", &[into_json(hash)?, 0.into()])?;
-        let buf = Bytes::from(hex::decode(hex)?);
-        Ok(Block::from(buf))
-    }
+    async fn get_block(&self, hash: &BlockHash) -> Result<Block>;
 
     /// Returns the numbers of block in the 'longest" chain (the chain with the most proof of work).
     fn get_block_count(&self) -> Result<u64> {
@@ -490,6 +482,8 @@ pub trait RpcApi: Sized {
 /// Client implements a JSON-RPC client for the Bitcoin SV daemon or compatible APIs.
 pub struct Client {
     client: jsonrpc::client::Client,
+    rest_enabled: bool,
+    url: String,
 }
 
 impl fmt::Debug for Client {
@@ -519,6 +513,8 @@ impl Client {
         };
         Ok(Client {
             client: jsonrpc::client::Client::with_transport(b.build()),
+            rest_enabled: true,
+            url: url.to_string(),
         })
     }
 
@@ -546,6 +542,7 @@ impl Client {
     }
 }
 
+#[async_trait]
 impl RpcApi for Client {
     /// Call an `cmd` rpc with given `args` list
     fn call<T: for<'a> serde::de::Deserialize<'a>>(
@@ -569,6 +566,38 @@ impl RpcApi for Client {
         let resp = self.client.send_request(req).map_err(Error::from);
         log_response(cmd, &resp);
         Ok(resp?.result()?)
+    }
+
+    async fn get_block(&self, hash: &BlockHash) -> Result<Block> {
+        if self.rest_enabled {
+            // Construct the REST URL for fetching the block
+            let block_url = format!("{}/rest/block/{}.bin", self.url.trim_end_matches('/'), hash);
+
+            // Make HTTP GET request to fetch the block data
+            let response = reqwest::get(&block_url)
+                .await
+                .map_err(|e| Error::RestError(e.to_string()))?;
+
+            if !response.status().is_success() {
+                return Err(Error::RestError(format!(
+                    "HTTP error: {} - {}",
+                    response.status().as_u16(),
+                    response.status().canonical_reason().unwrap_or("Unknown")
+                )));
+            }
+
+            // Get the block bytes
+            let block_bytes = response.bytes()
+                .await
+                .map_err(|e| Error::RestError(e.to_string()))?;
+
+            // Parse the binary block data
+            Ok(Block::from(block_bytes))
+        } else {
+            let hex: String = self.call("getblock", &[into_json(hash)?, 0.into()])?;
+            let buf = Bytes::from(hex::decode(hex)?);
+            Ok(Block::from(buf))
+        }
     }
 }
 
