@@ -1,6 +1,6 @@
 [package]
 name = "bitcoinsv-rpc"
-version = "1.0.3"
+version = "1.0.4"
 authors = [
     "Daniel Connolly <daniel@dconnolly.com>"
 ]
@@ -19,7 +19,7 @@ path = "src/lib.rs"
 [dependencies]
 async-trait = "0.1.75"
 bitcoinsv = { workspace = true }
-bitcoinsv-rpc-json = "1.0.3"
+bitcoinsv-rpc-json = { path = "../json" }
 bytes = { workspace = true }
 hex = "0.4.3"
 jsonrpc = { version = "0.16.0", features = ["minreq_http"]}

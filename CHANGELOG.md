@@ -1,3 +1,7 @@
+# 1.0.4
+- getblock uses REST interface by default
+- cargo update
+
 # 1.0.3
 - update for bitcoinsv dependency to version 0.3.0
 
