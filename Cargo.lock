@@ -123,11 +123,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "bitcoinsv"
+version = "0.3.3"
+source = "git+https://github.com/Danconnolly/rust-bitcoinsv.git#cc0c95ba8d40e5cafc19073feea23fabb34ff15e"
+dependencies = [
+ "base58",
+ "bytes",
+ "hex",
+ "log",
+ "num",
+ "rand",
+ "ring",
+ "ripemd",
+ "secp256k1",
+ "serde",
+]
+
+[[package]]
 name = "bitcoinsv-rpc"
 version = "1.0.4"
 dependencies = [
  "async-trait",
- "bitcoinsv",
+ "bitcoinsv 0.3.3 (git+https://github.com/Danconnolly/rust-bitcoinsv.git)",
  "bitcoinsv-rpc-json 1.0.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "bytes",
  "hex",
@@ -145,7 +162,7 @@ name = "bitcoinsv-rpc-json"
 version = "1.0.4"
 dependencies = [
  "approx",
- "bitcoinsv",
+ "bitcoinsv 0.3.3 (git+https://github.com/Danconnolly/rust-bitcoinsv.git)",
  "hex",
  "serde",
  "serde_json",
@@ -157,7 +174,7 @@ version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4edd2139e742fd96664bda5c7a60b73735ce0fc3d81a5855cc808b6eb96f2f7a"
 dependencies = [
- "bitcoinsv",
+ "bitcoinsv 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "hex",
  "serde",
  "serde_json",
@@ -180,9 +197,9 @@ dependencies = [
 
 [[package]]
 name = "bumpalo"
-version = "3.18.1"
+version = "3.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "793db76d6187cd04dff33004d8e6c9cc4e05cd330500379d2394209271b4aeee"
+checksum = "46c5e41b57b8bba42a04676d81cb89e9ee8e859a1a66f80a5a72e1cb76b34d43"
 
 [[package]]
 name = "bytes"
@@ -661,9 +678,9 @@ dependencies = [
 
 [[package]]
 name = "indexmap"
-version = "2.9.0"
+version = "2.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cea70ddb795996207ad57735b50c5982d8844f38ba9ee5f1aedcfb708a2aa11e"
+checksum = "fe4cd85333e22411419a0bcae1297d25e58c9443848b11dc6a86fefe8c78a661"
 dependencies = [
  "equivalent",
  "hashbrown",
@@ -673,7 +690,7 @@ dependencies = [
 name = "integration_test"
 version = "1.0.4"
 dependencies = [
- "bitcoinsv",
+ "bitcoinsv 0.3.3 (git+https://github.com/Danconnolly/rust-bitcoinsv.git)",
  "bitcoinsv-rpc",
  "tokio",
 ]
@@ -1722,9 +1739,9 @@ checksum = "5e6ad25900d524eaabdbbb96d20b4311e1e7ae1699af4fb28c17ae66c80d798a"
 
 [[package]]
 name = "windows-registry"
-version = "0.5.2"
+version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b3bab093bdd303a1240bb99b8aba8ea8a69ee19d34c9e2ef9594e708a4878820"
+checksum = "5b8a9ed28765efc97bbc954883f4e6796c33a06546ebafacbabee9696967499e"
 dependencies = [
  "windows-link",
  "windows-result",
