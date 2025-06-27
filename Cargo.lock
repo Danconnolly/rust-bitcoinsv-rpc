@@ -107,24 +107,6 @@ dependencies = [
 [[package]]
 name = "bitcoinsv"
 version = "0.3.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0487787151f2c3fce55409adc0c400bf369440df513b6015f7846039f3e55648"
-dependencies = [
- "base58",
- "bytes",
- "hex",
- "log",
- "num",
- "rand",
- "ring",
- "ripemd",
- "secp256k1",
- "serde",
-]
-
-[[package]]
-name = "bitcoinsv"
-version = "0.3.3"
 source = "git+https://github.com/Danconnolly/rust-bitcoinsv.git#cc0c95ba8d40e5cafc19073feea23fabb34ff15e"
 dependencies = [
  "base58",
@@ -144,8 +126,8 @@ name = "bitcoinsv-rpc"
 version = "1.0.4"
 dependencies = [
  "async-trait",
- "bitcoinsv 0.3.3 (git+https://github.com/Danconnolly/rust-bitcoinsv.git)",
- "bitcoinsv-rpc-json 1.0.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bitcoinsv",
+ "bitcoinsv-rpc-json",
  "bytes",
  "hex",
  "jsonrpc",
@@ -162,19 +144,7 @@ name = "bitcoinsv-rpc-json"
 version = "1.0.4"
 dependencies = [
  "approx",
- "bitcoinsv 0.3.3 (git+https://github.com/Danconnolly/rust-bitcoinsv.git)",
- "hex",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "bitcoinsv-rpc-json"
-version = "1.0.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4edd2139e742fd96664bda5c7a60b73735ce0fc3d81a5855cc808b6eb96f2f7a"
-dependencies = [
- "bitcoinsv 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "bitcoinsv",
  "hex",
  "serde",
  "serde_json",
@@ -690,7 +660,7 @@ dependencies = [
 name = "integration_test"
 version = "1.0.4"
 dependencies = [
- "bitcoinsv 0.3.3 (git+https://github.com/Danconnolly/rust-bitcoinsv.git)",
+ "bitcoinsv",
  "bitcoinsv-rpc",
  "tokio",
 ]
