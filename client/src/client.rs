@@ -592,11 +592,11 @@ impl RpcApi for Client {
                 .map_err(|e| Error::RestError(e.to_string()))?;
 
             // Parse the binary block data
-            Ok(Block::from(block_bytes))
+            Ok(Block::new(block_bytes)?)
         } else {
             let hex: String = self.call("getblock", &[into_json(hash)?, 0.into()])?;
             let buf = Bytes::from(hex::decode(hex)?);
-            Ok(Block::from(buf))
+            Ok(Block::new(buf)?)
         }
     }
 }

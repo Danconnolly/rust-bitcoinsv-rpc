@@ -117,7 +117,7 @@ async fn test_get_block(cl: &Client) {
     assert_eq!(info.hash, tip);
     assert_eq!(info.confirmations, 1);
     assert_eq!(info.num_tx, block.num_tx);
-    let hdr = block.header();
+    let hdr = block.header().unwrap();
     assert_eq!(info.hash, hdr.hash());
 }
 
