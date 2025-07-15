@@ -1,3 +1,8 @@
+# 1.0.5
+- Update bitcoinsv dependency to v0.4.0 (from git dependency to crates.io)
+- Fix API compatibility with bitcoinsv v0.4.0 (Block::new instead of Block::from)
+- Add CLAUDE.md documentation for development guidance
+
 # 1.0.4
 - getblock uses REST interface by default
 - cargo update

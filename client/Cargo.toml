@@ -1,6 +1,6 @@
 [package]
 name = "bitcoinsv-rpc"
-version = "1.0.4"
+version = "1.0.5"
 authors = [
     "Daniel Connolly <daniel@dconnolly.com>"
 ]
