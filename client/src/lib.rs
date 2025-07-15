@@ -7,9 +7,11 @@
 //!
 //! Example usage:
 //! ```no_run
-//!    let rpc_client = Client::new("http://127.0.0.1:8332", Auth::UserPass("username".to_string(), "password".to_string())).unwrap();
-//!    let best_block_hash = rpc_client.get_best_block_hash().unwrap();
-//!    println!("best block hash: {}", best_block_hash);
+//! use bitcoinsv_rpc::{Auth, Client, RpcApi};
+//! 
+//! let rpc_client = Client::new("http://127.0.0.1:8332", Auth::UserPass("username".to_string(), "password".to_string()), None).unwrap();
+//! let best_block_hash = rpc_client.get_best_block_hash().unwrap();
+//! println!("best block hash: {}", best_block_hash);
 //! ```
 //!
 //! For documentation on which methods are available, see the [RpcApi] trait.
