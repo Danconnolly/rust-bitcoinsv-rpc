@@ -1,0 +1,22 @@
+[package]
+name = "bsvrpc"
+version = "1.0.5"
+authors = ["The rust-bitcoinsv-rpc developers"]
+license = "CC0-1.0"
+edition = "2021"
+description = "Command-line Bitcoin SV RPC client"
+repository = "https://github.com/TiernanMcCarthy/rust-bitcoinsv-rpc/"
+
+[[bin]]
+name = "bsvrpc"
+path = "src/main.rs"
+
+[dependencies]
+bitcoinsv-rpc = { path = "../client", version = "1.0.5" }
+bitcoinsv-rpc-json = { path = "../json", version = "1.0.5" }
+bitcoinsv = { version = "0.4.0" }
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+anyhow = "1.0"
+hex = "0.4"

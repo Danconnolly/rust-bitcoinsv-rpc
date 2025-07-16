@@ -4,6 +4,7 @@ members = [
     "json",
     "client",
     "integration_test",
+    "bsvrpc",
 ]
 
 [workspace.dependencies]
